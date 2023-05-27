@@ -1,4 +1,5 @@
 name: Update Last Updated
+
 on:
   workflow_dispatch:
   schedule:
@@ -14,8 +15,8 @@ jobs:
       
       - name: Set Last Updated
         id: set_last_updated
-        run: echo "::set-output name=last_updated::$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')"
+        run: echo "last_updated=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       
       - name: Update HTML File
         run: |
-          sed -i 's|<h6>last updated: </h6>|<h6>last updated: ${{ steps.set_last_updated.outputs.last_updated }}</h6>|g' index.html
+          sed -i 's|<h6>last updated: </h6>|<h6>last updated: ${{ env.last_updated }}</h6>|g' index.html
