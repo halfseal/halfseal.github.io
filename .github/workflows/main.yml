@@ -18,13 +18,14 @@ jobs:
       
       - name: Update HTML File
         run: |
-          sed -i "s|<h6>last updated: </h6>|<h6>last updated: ${{ env.last_updated }}</h6>|g" index.html
+          sed -i "s|<h6>last updated: </h6>|<h6>last updated: </h6>${{ env.last_updated }}|g" index.html
       
       - name: Commit Changes
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
-          git commit -a -m 'Update last updated'
+          git add index.html
+          git commit -m 'Update last updated'
       
       - name: Push Changes
         uses: ad-m/github-push-action@v0.6.0
