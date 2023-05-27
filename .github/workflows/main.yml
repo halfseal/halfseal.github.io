@@ -14,7 +14,7 @@ jobs:
       
       - name: Set Last Updated
         id: set_last_updated
-        run: echo "last_updated=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        run: echo "last_updated=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       
       - name: Update HTML File
         run: |
