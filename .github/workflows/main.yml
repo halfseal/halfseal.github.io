@@ -3,12 +3,11 @@ name: Update Last Updated
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' # 매 시간 정각에 실행 (UTC 기준)
 
 jobs:
-  build:
+  update_last_updated:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -16,7 +15,15 @@ jobs:
       - name: Set Last Updated
         id: set_last_updated
         run: echo "last_updated=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
-
+      
       - name: Update HTML File
         run: |
           sed -i "s|<h6>last updated: </h6>|<h6>last updated: ${{ env.last_updated }}</h6>|g" index.html
+      
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add index.html
+          git commit -m 'Update last updated'
+          git push
