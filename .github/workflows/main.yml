@@ -1,24 +1,29 @@
 name: Update Last Updated
 
 on:
+  # when clicking Run workflow button
   workflow_dispatch:
 
 jobs:
   update_last_updated:
     runs-on: ubuntu-latest
     steps:
+      # to get code from repository. somehow similar with git clone
       - name: Checkout Repository
         uses: actions/checkout@v2
       
+      # to get the last commit date. it sets the last_updated variable and pass it to GITHUB_ENV
       - name: Set Last Updated
-        id: set_last_updated
         run: echo "last_updated=$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       
+      # to get the last_updated variable from GITHUB_ENV
+      # it clear the line with <h6>last updated something, and replace it with the last_updated variable
       - name: Update HTML File
         run: |
           sed -i "s|<h6>last updated: .*<\/h6>|<h6>last updated: <\/h6>|g" index.html
           sed -i "s|<h6>last updated: </h6>|<h6>last updated: ${{ env.last_updated }}</h6>|g" index.html
       
+      # to commit and push the changes
       - name: Commit and Push Changes
         run: |
           git config --global user.name 'GitHub Actions'
