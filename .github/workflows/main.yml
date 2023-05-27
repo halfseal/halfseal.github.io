@@ -2,8 +2,9 @@ name: Update Last Updated
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 * * * *' # 매 시간 정각에 실행 (UTC 기준)
+  push:
+    branches:
+      - main
 
 jobs:
   update_last_updated:
@@ -18,6 +19,7 @@ jobs:
       
       - name: Update HTML File
         run: |
+          sed -i "s|<h6>last updated: .*<\/h6>|<h6>last updated: <\/h6>|g" index.html
           sed -i "s|<h6>last updated: </h6>|<h6>last updated: ${{ env.last_updated }}</h6>|g" index.html
       
       - name: Commit and Push Changes
