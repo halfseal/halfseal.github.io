@@ -1,17 +1,21 @@
-name: Test Workflow
+name: Update Last Updated
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: #
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Print Hello World
-        run: echo "Hello, World!"
+      
+      - name: Set Last Updated
+        id: set_last_updated
+        run: echo "::set-output name=last_updated::$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')"
+      
+      - name: Update HTML File
+        run: |
+          sed -i 's|<h6>last updated: </h6>|<h6>last updated: ${{ steps.set_last_updated.outputs.last_updated }}</h6>|g' index.html
